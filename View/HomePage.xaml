@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="Scheduler.View.HomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="MyLableStyle" TargetType="Label">
+                <Setter Property="Foreground" Value="#FEFCDD"/>
+                <Setter Property="Opacity" Value="0.7"/>
+            </Style>            
+        </Grid.Resources>
+        <StackPanel Margin="80, 80, 80, 40">
+
+            <Label HorizontalAlignment="Center">
+                <Label.Content>
+                    <StackPanel Orientation="Vertical">
+                        <Label Name="MainLbl"  Content="Welcome To Scheduler App, Version 1.0" Style="{StaticResource MyLableStyle}"/>
+                        <Separator Margin="0, 0, 0, 20"/>
+                        <Label Content="With Scheduler App You can . . ." Margin="10" Style="{StaticResource MyLableStyle}"/>
+                        <Label Content=" * Compose a Schedule!" Margin="15" Style="{StaticResource MyLableStyle}"/>
+                        <Label Content=" * Edit Your Schedules!" Margin="15" Style="{StaticResource MyLableStyle}"/>
+                        <Label Content=" * Manage Your Schedules and More!" Margin="15" Style="{StaticResource MyLableStyle}"/>
+                    </StackPanel>
+                </Label.Content>
+                <Label.Triggers>
+                    <EventTrigger RoutedEvent = "Label.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard TargetProperty = "FontSize">
+                                    <DoubleAnimation From = "16" To = "24" Duration = "0:0:6"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                            <BeginStoryboard>
+                                <Storyboard TargetName = "MainLbl" TargetProperty = "FontSize">
+                                    <DoubleAnimation From = "18" To = "28" Duration = "0:0:6"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Label.Triggers>
+            </Label>
+        </StackPanel>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint = "0,0" EndPoint = "1,1">
+                <GradientStop Color = "#728C00" Offset = "0" />
+                <GradientStop Color = "#FF2B2A2A" Offset = "0.25" />
+                <GradientStop Color = "#728C00" Offset = "0.85" />
+                <GradientStop Color = "#FF2B2A2A" Offset = "0.70" />
+            </LinearGradientBrush>
+        </Grid.Background>
+    </Grid>
+</UserControl>

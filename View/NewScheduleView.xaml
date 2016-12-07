@@ -1,0 +1,411 @@
+﻿<UserControl x:Class="Scheduler.View.NewScheduleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:h ="clr-namespace:Scheduler.Helpers"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <h:BooleanToVisibilityConverter x:Key="visibilityConverter"/>
+    </UserControl.Resources>
+    <Grid >
+        <Border BorderBrush="#525050" BorderThickness="0, 0, 1, 1">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush" Value="#728C00"/>
+                        <Setter Property="BorderThickness" Value="2, 2, 2, 2"/>
+                    </Style>
+                    <Style x:Key="RoundButtonTemplate" TargetType="Button">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Setter Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </Style.Triggers>
+                        <Setter Property="Width" Value="100" />
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Background" Value="#728C00"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="Height" Value="35" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border CornerRadius="6" Background="{TemplateBinding Background}"
+                                                    BorderThickness="1">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                                        </ContentPresenter>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="MyTextBlockStyle" TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="TextAlignment" Value="Left"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                    </Style>
+
+                    <Style x:Key="MyTextBoxStyle" TargetType="TextBox">
+                        <Setter Property="Background" Value="#FF2B2A2A"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                    </Style>
+
+                    <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                  x:Name="Border" 
+                                  Grid.ColumnSpan="2"
+                                  CornerRadius="2"
+                                  Background="#FF2B2A2A"
+                                  BorderBrush="#525050"
+                                  BorderThickness="1" />
+                            <Border 
+                                  Grid.Column="0"
+                                  CornerRadius="2,0,0,2" 
+                                  Margin="1" 
+                                  Background="#FF2B2A2A" 
+                                  BorderBrush="#525050"
+                                  BorderThickness="1,1,1,1" />
+                            <Path 
+                                  x:Name="Arrow"
+                                  Grid.Column="1"     
+                                  Fill="#B8B8B8 "
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M 0 0 L 4 4 L 8 0 Z"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#525050" />
+                            </Trigger>
+                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#525050" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#525050" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FEFCDD" />
+                                <Setter Property="Foreground" Value="#FEFCDD"/>
+                                <Setter TargetName="Arrow" Property="Fill" Value="Orange" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                    
+                    <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
+                        <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+                    </ControlTemplate>
+                    
+                    <Style x:Key="{x:Type ComboBoxItem}" TargetType="ComboBoxItem">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                    </Style>
+
+                    <Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+                        <Setter Property="SnapsToDevicePixels" Value="true"/>
+                        <Setter Property="OverridesDefaultStyle" Value="true"/>
+                        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+                        <Setter Property="MinWidth" Value="120"/>
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Margin" Value="4, 15, 4, 0"/>
+                        <Setter Property="Template">
+                            
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBox">
+                                    <Grid>
+                                        <ToggleButton 
+                                                Name="ToggleButton" 
+                                                Template="{StaticResource ComboBoxToggleButton}" 
+                                                Grid.Column="2" 
+                                                Focusable="false"
+                                                IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                                ClickMode="Press">
+                                        </ToggleButton>
+                                        <ContentPresenter
+                                                Name="ContentSite"
+                                                IsHitTestVisible="False" 
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                Margin="3,3,23,3"
+                                                TextElement.Foreground="#FEFCDD"
+                                                TextElement.FontSize="14"
+                                                Opacity="0.7"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left" />
+                                        <TextBox x:Name="PART_EditableTextBox"
+                                                Style="{StaticResource MyTextBoxStyle}" 
+                                                HorizontalAlignment="Left" 
+                                                VerticalAlignment="Center" 
+                                                Margin="3,3,23,3"
+                                                Focusable="True" 
+                                                Visibility="Hidden"
+                                                IsReadOnly="{TemplateBinding IsEditable}"/>
+                                        <Popup 
+                                                Name="Popup"
+                                                Placement="Bottom"        
+                                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                AllowsTransparency="True" 
+                                                Focusable="False"
+                                                PopupAnimation="Slide">
+                                            <Grid 
+                                                  Name="DropDown"
+                                                  SnapsToDevicePixels="True"                
+                                                  MinWidth="{TemplateBinding ActualWidth}"
+                                                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                <Border 
+                                                        x:Name="DropDownBorder"
+                                                        Background="#FF2B2A2A"
+                                                        BorderThickness="1"
+                                                        BorderBrush="#525050"/>
+                                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                                </ScrollViewer>
+                                            </Grid>
+                                        </Popup>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="Text" Value="PART_EditableTextBox">
+                                            <Setter Property="TextElement.Foreground" Value="#FEFCDD" />
+                                        </Trigger>
+                                        <Trigger Property="HasItems" Value="false">
+                                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Foreground" Value="#525050"/>
+                                        </Trigger>
+                                        <Trigger Property="IsGrouping" Value="true">
+                                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                                        </Trigger>
+                                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
+                                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEditable" Value="true">
+                                            <Setter Property="IsTabStop" Value="false"/>
+                                            <Setter TargetName="PART_EditableTextBox" Property="Visibility"    Value="Visible"/>
+                                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                        </Style.Triggers>
+                    </Style>
+                    <Style x:Key="MyDatePickerStyle" TargetType="DatePicker" x:Name="DatePicker" >
+                        <Setter Property="Background" Value="#FF2B2A2A"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Button.Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="Black" Direction="320" ShadowDepth="5" BlurRadius="5" Opacity="0.5" />
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2.8*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="#525050" BorderThickness="1, 1, 1, 1" Margin="15, 15, 15, 15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Start Date" Style="{StaticResource MyTextBlockStyle}"/>
+                        <DatePicker Name="Dpicker" Grid.Column="1" Style="{StaticResource MyDatePickerStyle}" SelectedDate="{Binding StartDate}"/>
+                        <TextBlock Grid.Column="2" Text="End Date" Style="{StaticResource MyTextBlockStyle}"/>
+                        <DatePicker Name="Dpicker2" Grid.Column="3" Style="{StaticResource MyDatePickerStyle}" SelectedDate="{Binding EndDate}"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" BorderBrush="#525050" BorderThickness="1, 1, 1, 1" Margin="15, 15, 15, 5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="1.2*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Title" Style="{StaticResource MyTextBlockStyle}"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource MyTextBoxStyle}" Text="{Binding Title}" Height="25"/>
+
+                        <TextBlock Grid.Row="1" Text="Catagory" Style="{StaticResource MyTextBlockStyle}" Margin="4, 15, 4, 0"/>
+                        <ComboBox Name="CatagoryName"  Grid.Row="1" Grid.Column="1"
+                                 ItemsSource="{Binding Path=Catagories}" SelectedItem="{Binding SelectedCatagory}">
+                        </ComboBox>
+                        <TextBlock Grid.Row="2" Text="Discription" Style="{StaticResource MyTextBlockStyle}"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" SpellCheck.IsEnabled="True" Text="{Binding Discription}" 
+                                 Style="{StaticResource MyTextBoxStyle}" Height="75" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource MyTextBlockStyle}" 
+                                   Visibility="{Binding Path=IsMessageToDisplayVisible, Converter={StaticResource visibilityConverter}}"
+                                   Text="{Binding Path=MessageToDisplay, NotifyOnTargetUpdated=True}">
+                            <TextBlock.Triggers>
+                                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                    <BeginStoryboard>
+                                        <Storyboard >
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" >
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.5"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:6" Value="1"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:10" Value="0"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBlock.Triggers>
+                        </TextBlock>
+
+                    </Grid>
+                </Border>
+                <Border Grid.Row="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+                                <Setter Property="Margin" Value="15"/>
+                                <Setter Property="CornerRadius" Value="15"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Button.Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect Color="Black" Direction="320" ShadowDepth="5" BlurRadius="4" Opacity="1"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid  Grid.Column="1">
+                            <Border Style="{StaticResource MyBorderStyle}" Grid.Column="1"  HorizontalAlignment="Right">
+                                <Button Style="{StaticResource RoundButtonTemplate}" Width="100" Content="Save" Command="{Binding SaveScheduleCommand}"/>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" BorderBrush="#525050" BorderThickness="1, 1, 1, 1" Margin="15,15,15,15" Grid.RowSpan="3">
+                    <Grid>
+                        <Grid.Resources>
+                            <Storyboard x:Key="ShowGrid">
+                                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="QuickViewGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                    <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}"/>
+                                    <DiscreteObjectKeyFrame  Value="{x:Static Visibility.Visible}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Viewbox>
+                            <Viewbox.Resources>
+                                <Style x:Key="MyCalanderStyle" TargetType="{x:Type CalendarDayButton}">
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="TextElement.Foreground" Value="White"/>
+                                </Style>
+                            </Viewbox.Resources>
+                            <StackPanel Orientation="Vertical">
+                                <Calendar CalendarDayButtonStyle="{StaticResource MyCalanderStyle}" Background="#777777" SelectedDate="{Binding SelectedDate}" SelectionMode="SingleDate" />
+                                <Button Style="{StaticResource RoundButtonTemplate}" Content="Quick Preview" Command="{Binding ScheduleByDateCommand}" >
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Button.Click">
+                                            <BeginStoryboard Storyboard="{StaticResource ShowGrid}"/>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </Viewbox>
+
+                        <Border  Grid.Row="1" Margin="10,10,10,10">
+
+                            <ListBox  Name="QuickViewGrid" Background="#FF2B2A2A" BorderBrush="#525050" ItemsSource="{Binding SelectedDateSchedule}" Visibility="Collapsed">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#525050" BorderThickness="0, 0, 0, 1">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Style="{StaticResource MyTextBlockStyle}" 
+                                                           Visibility="{Binding Path=IsErrorMessageVisible}"
+                                                           Text="{Binding Path=ErrorMessage}"
+                                                           Opacity="1"/>
+                                                <TextBlock Text="Task" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="1" Text="Start Date" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource MyTextBlockStyle}" Text="{Binding StartDate, StringFormat=D}"/>
+                                                <TextBlock Grid.Row="2" Text="End Date" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource MyTextBlockStyle}" Text="{Binding EndDate, StringFormat=D}"/>
+                                                <TextBlock Grid.Row="3" Text="Catagory" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource MyTextBlockStyle}" Text="{Binding Catagory}"/>
+                                                <TextBlock Grid.Row="4" Style="{StaticResource MyTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource MyTextBlockStyle}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

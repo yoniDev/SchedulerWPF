@@ -1,0 +1,123 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm ="clr-namespace:Scheduler.ViewModel"
+        xmlns:v ="clr-namespace:Scheduler.View"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        mc:Ignorable="d" x:Class="Scheduler.MainWindow"
+        Title="Scheduler" Height="600" Width="1200" WindowStartupLocation="CenterScreen"
+        Icon="C:\Users\yonas\documents\visual studio 2013\Projects\Scheduler\Resources\scheduleIcon.ico">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:ScheduleViewModel}">
+            <v:SchedulesView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:NewScheduleViewModel}">
+            <v:NewScheduleView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HomePageViewModel}">
+            <v:HomePage/>
+        </DataTemplate>
+    </Window.Resources>
+    <Border BorderThickness="3, 0, 3, 8" BorderBrush="#FF2B2A2A">
+        <DockPanel Background="#FF2B2A2A">
+
+            <ItemsControl ItemsSource="{Binding PageViewModels}" Grid.IsSharedSizeScope="True">
+                <ItemsControl.Resources>
+
+                    <Style x:Key="MyTextBlockStyle" TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="TextAlignment" Value="Center"/>
+                    </Style>
+
+                    <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+                        <Setter Property="BorderThickness" Value="5, 0, 0, 0" />
+                    </Style>
+
+                    <Style x:Key="MyButtonStyle" TargetType="{x:Type Button}">
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="Template">
+
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+
+                                    <Grid Background="#FF464242">
+                                        <Border Style="{StaticResource MyBorderStyle}" Name="border">
+                                            <ContentPresenter HorizontalAlignment="Center"
+													VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter TargetName="border" Property="BorderBrush" Value="#728C00"/>
+                                            <Setter Property="Opacity" Value="1"/>
+
+                                        </Trigger>
+
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="BorderBrush" Value="#728C00"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style x:Key="MyImageStyle" TargetType="Image">
+                        <Setter Property="Stretch" Value="Uniform"/>
+                        <Setter Property="Height" Value="92"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Button.Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="3" Opacity="1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Resources>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid DockPanel.Dock="Left" Width="110">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Grid.Row="{Binding GridRow}" BorderBrush="#525050" BorderThickness="1, 1, 1, 1">
+                            <Button Style="{StaticResource MyButtonStyle}"  Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+								CommandParameter="{Binding}">
+
+                                <StackPanel Orientation="Vertical" >
+                                    <Image Source="{Binding ImagePath}" Style="{StaticResource MyImageStyle}"/>
+                                    <TextBlock Name="txtBox" Text="{Binding Name}" Style="{StaticResource MyTextBlockStyle}"/>
+                                </StackPanel>
+                                
+                            </Button>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Style.Setters>
+                            <Setter Property="Grid.Row" Value="{Binding GridRow}"/>
+                        </Style.Setters>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+            <ContentControl Content="{Binding CurrentPageViewModel}"/>
+        </DockPanel>
+    </Border>
+</Window>

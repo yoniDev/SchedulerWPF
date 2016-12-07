@@ -1,0 +1,320 @@
+﻿<UserControl x:Class="Scheduler.View.SchedulesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Scheduler.ViewModel"
+             xmlns:h ="clr-namespace:Scheduler.Helpers"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="1000" >
+
+    <UserControl.Resources>
+        
+        <h:BooleanToVisibilityConverter x:Key="visibilityConverter"/>
+        <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="BorderThickness" Value="0, 0, 0, 5" />
+            <Setter Property="BorderBrush" Value="#728C00"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#728C00"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="MyTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#FEFCDD"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="MinWidth" Value="170"/>
+            <Setter Property="Opacity" Value="0.7"/>
+        </Style>
+
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+
+            <Setter Property="Template" >
+
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Opacity" Value="0.7"/>
+                    <Setter Property="Button.Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="Black" Direction="320" ShadowDepth="10" BlurRadius="8" Opacity="1" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="Background" Value="#FF464242" />
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="Background" Value="#FF464242" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="RoundButtonTemplate" TargetType="Button">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter Property="Opacity" Value="0.7"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="Black" />
+                        <Setter Property="Opacity" Value="1"/>
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Width" Value="100" />
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Background" Value="#728C00"/>
+                <Setter Property="Foreground" Value="#FEFCDD"/>
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border CornerRadius="6" Background="{TemplateBinding Background}"
+                                                    BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                                </ContentPresenter>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Template">
+
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0, 1, 0, 1"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                        <Condition Property="IsSelected" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="Transparent" />
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelected" Value="True" />
+                                        <Condition Property="IsSelected" Value="True" />
+
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="#728C00" />
+                                    <Setter Property="Background" TargetName="border" Value="#728C00" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox Name="lstBox"  ItemsSource="{Binding Path=Schedules}" 
+                 Background="#FF2B2A2A" BorderBrush="#525050" 
+                 SelectionMode="Single" SelectedItem="{Binding CurrentSchedule}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10, 10, 4, 4">
+                        <TextBlock Text="{Binding Title}" Style="{StaticResource MyTextBlockStyle}" />
+                        <TextBlock Text="{Binding StartDate, StringFormat= dd-MM-yyyy}" Style="{StaticResource MyTextBlockStyle}" MinWidth="100"/>
+                        <TextBlock Text="{Binding CatagoryName}" Style="{StaticResource MyTextBlockStyle}" MinWidth="100"/>
+                        <TextBlock Text="{Binding IsFinished}" Style="{StaticResource MyTextBlockStyle}" MinWidth="100"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Column="1" BorderBrush="#525050" BorderThickness="1, 0, 1, 1" Margin="5, 0, 0, 0">
+            <Grid>
+                <Grid.Resources>
+                    <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush" Value="#728C00"/>
+                        <Setter Property="BorderThickness" Value="2, 2, 2, 2"/>
+                    </Style>
+
+                    <Style x:Key="MyTextBlockStyle" TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="TextAlignment" Value="Left"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                    </Style>
+
+                    <Style x:Key="MyTextBoxStyle" TargetType="TextBox">
+                        <Setter Property="Background" Value="#FF2B2A2A"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                    </Style>
+
+                    <Style x:Key="MyDatePickerStyle" TargetType="DatePicker" x:Name="DatePicker" >
+                        <Setter Property="Background" Value="#FF2B2A2A"/>
+                        <Setter Property="Foreground" Value="#FEFCDD"/>
+                        <Setter Property="Opacity" Value="0.7"/>
+                        <Setter Property="Margin" Value="4, 10, 4, 0"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Button.Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="Black" Direction="320" ShadowDepth="5" BlurRadius="5" Opacity="0.5"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2.8*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderBrush="#525050" BorderThickness="1, 1, 1, 1" Margin="15, 15, 15, 15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Start Date" Style="{StaticResource MyTextBlockStyle}"/>
+                        <DatePicker Name="Dpicker" Grid.Column="1" Style="{StaticResource MyDatePickerStyle}" SelectedDate="{Binding CurrentSchedule.StartDate}"/>
+                        <TextBlock Grid.Column="2" Text="End Date" Style="{StaticResource MyTextBlockStyle}"/>
+                        <DatePicker Name="Dpicker2" Grid.Column="3" Style="{StaticResource MyDatePickerStyle}" SelectedDate="{Binding CurrentSchedule.EndDate}"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" BorderBrush="#525050" BorderThickness="1, 1, 1, 1" Margin="15, 15, 15, 0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="1.2*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Title" Style="{StaticResource MyTextBlockStyle}"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource MyTextBoxStyle}" Text="{Binding CurrentSchedule.Title}"/>
+                        <TextBlock Grid.Row="1" Text="Catagory" Style="{StaticResource MyTextBlockStyle}"/>
+                        <TextBox Name ="CatagoryTxtBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource MyTextBoxStyle}" 
+                                 Text="{Binding CurrentSchedule.CatagoryName}" />
+
+                        <TextBlock Grid.Row="2" Text="Discription" Style="{StaticResource MyTextBlockStyle}"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" SpellCheck.IsEnabled="True" Text="{Binding CurrentSchedule.Discription}" 
+                                 Style="{StaticResource MyTextBoxStyle}" Height="75" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        <TextBlock Grid.Row="3"  Style="{StaticResource MyTextBlockStyle}"  Text="Completed"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,10,4,0">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Background" Value="#728C00"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Background" Value="#FEFCDD"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                       
+                    </Grid>
+                </Border>
+                <Border Grid.Row="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <Style x:Key="MyBorderStyle" TargetType="{x:Type Border}">
+                                <Setter Property="Margin" Value="15"/>
+                                <Setter Property="CornerRadius" Value="15"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Button.Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect Color="Black" Direction="320" ShadowDepth="5" BlurRadius="4" Opacity="1"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+                        <TextBlock Grid.ColumnSpan="2" Style="{StaticResource MyTextBlockStyle}" 
+                                   Visibility="{Binding Path=IsMessageToDisplayVisible, Converter={StaticResource visibilityConverter}}"
+                                   Text="{Binding Path=MessageToDisplay, NotifyOnTargetUpdated=True}"
+                                   >
+
+                            <TextBlock.Triggers>
+                                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                    <BeginStoryboard>
+                                        <Storyboard >
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" >
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.5"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:6" Value="1"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:10" Value="0"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBlock.Triggers>
+                        </TextBlock>
+                        <Border Style="{StaticResource MyBorderStyle}" Grid.Column="2"  HorizontalAlignment="Left">
+                            <Button Style="{StaticResource RoundButtonTemplate}" Content="Delete" Command="{Binding DeleteScheduleCommand}"/>
+                        </Border>
+                        <Border Style="{StaticResource MyBorderStyle}" Grid.Column="3"  HorizontalAlignment="Right">
+                            <Button Style="{StaticResource RoundButtonTemplate}" Content="Update" Command="{Binding EditScheduleCommand}"/>
+                        </Border>
+
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
